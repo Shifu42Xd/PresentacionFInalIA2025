@@ -1,0 +1,81 @@
+<!-- Slide 10: Multi-Head Attention -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>8. Multi-Head Attention: Múltiples Perspectivas</h2>
+
+                <h3>¿Por Qué Múltiples Cabezas?</h3>
+                <p>Una sola cabeza promedia la atención. Múltiples cabezas permiten atender a <strong>diferentes
+                        aspectos simultáneamente</strong>.</p>
+
+                <div class="example-box">
+                    <h3 style="margin-top: 0;">Ejemplo: "María le dio un regalo a Juan porque es su amigo"</h3>
+                    <p><strong>Head 1 (Sintaxis):</strong> Conecta "dio" con "María" (sujeto) y "regalo" (objeto)</p>
+                    <p><strong>Head 2 (Correferencia):</strong> Conecta "es" con "Juan", no con "María"</p>
+                    <p><strong>Head 3 (Semántica):</strong> Conecta "regalo" con "amigo" (relación de amistad)</p>
+                </div>
+
+                <h3>Implementación</h3>
+                <div class="math">
+                    MultiHead(Q,K,V) = Concat(head₁,...,head₈)W^O<br><br>
+                    donde head_i = Attention(QW^Q_i, KW^K_i, VW^V_i)
+                </div>
+
+                <h3>Ventajas</h3>
+                <ul>
+                    <li>Captura relaciones complejas desde múltiples perspectivas</li>
+                    <li>Cada cabeza se especializa en diferentes patrones</li>
+                    <li>Más robusto que atención de una sola cabeza</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 11: Entrenamiento y Variantes -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>9. Entrenamiento y Variantes del Transformer</h2>
+
+                <h3>Entrenamiento del Transformer Original</h3>
+                <ul>
+                    <li><strong>Optimizador:</strong> Adam (β₁=0.9, β₂=0.98, ε=10⁻⁹)</li>
+                    <li><strong>Learning Rate Scheduling:</strong> Warmup (4000 pasos) + decay</li>
+                    <li><strong>Regularización:</strong> Dropout (0.1), Label Smoothing (0.1)</li>
+                    <li><strong>Hardware:</strong> 8 GPUs P100, 3.5 días para el modelo grande</li>
+                </ul>
+
+                <h3>Variantes Modernas</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="font-size: 1.3em; margin-top: 0; padding-left: 0;">Encoder-Only</h3>
+                        <p><strong>BERT, RoBERTa</strong></p>
+                        <p>Excelentes para:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Clasificación de texto</li>
+                            <li>Análisis de sentimiento</li>
+                            <li>NER, Q&A</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="font-size: 1.3em; margin-top: 0; padding-left: 0;">Decoder-Only</h3>
+                        <p><strong>GPT, Claude, LLaMA</strong></p>
+                        <p>Excelentes para:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Generación de texto</li>
+                            <li>Conversación</li>
+                            <li>Código, creatividad</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Escalamiento</h3>
+                <div class="math">
+                    GPT-2: 1.5B parámetros<br>
+                    GPT-3: 175B parámetros<br>
+                    GPT-4: ~1.7T parámetros (estimado)
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformers y LLMs</title>
+    <style>
+        /* Variables CSS para tema tecnológico */
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-surface: #1a1a26;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0d0;
+            --text-muted: #8888aa;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7a4fff;
+            --accent-glow: rgba(0, 212, 255, 0.4);
+            --neon-blue: #00d4ff;
+            --neon-purple: #7a4fff;
+            --neon-pink: #ff00ff;
+            --grid-color: rgba(0, 212, 255, 0.08);
+            --border-tech: rgba(122, 79, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Fondo tecnológico futurista */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(122, 79, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 85% 30%, rgba(0, 212, 255, 0.03) 0%, transparent 20%),
+                linear-gradient(to bottom, transparent 95%, rgba(0, 212, 255, 0.02) 100%);
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        /* Patrón de circuito o red neuronal */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Animación de partículas de datos */
+        .data-particle {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 4px var(--neon-blue);
+            z-index: -1;
+            opacity: 0;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            background: rgba(26, 26, 38, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 
+                0 0 0 1px rgba(122, 79, 255, 0.2),
+                0 10px 40px rgba(0, 0, 0, 0.6),
+                0 0 80px rgba(0, 212, 255, 0.1);
+            padding: 50px;
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+            border: 1px solid var(--border-tech);
+            overflow: hidden;
+        }
+
+        .slide::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(80px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Títulos con efecto futurista */
+        h1 {
+            color: var(--text-primary);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-align: center;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            position: relative;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        h2 {
+            color: var(--text-primary);
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), transparent);
+            border-radius: 3px;
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        h3::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60%;
+            background: var(--neon-blue);
+            border-radius: 2px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        li::before {
+            content: "▸";
+            color: var(--neon-blue);
+            position: absolute;
+            left: -20px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* Contador de diapositivas */
+        .slide-counter {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: rgba(26, 26, 38, 0.9);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            color: var(--neon-blue);
+            font-weight: 700;
+            border: 1px solid var(--border-tech);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 212, 255, 0.1);
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+        }
+
+        .slide-counter::before {
+            content: "📊";
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        /* Botón de pantalla completa en la primera diapositiva */
+        .fullscreen-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(26, 26, 38, 0.9);
+            color: var(--neon-blue);
+            border: 1px solid var(--border-tech);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(36, 36, 48, 0.95);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .fullscreen-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--neon-blue);
+            transition: all 0.3s ease;
+        }
+
+        .fullscreen-btn:hover svg {
+            stroke: var(--neon-purple);
+        }
+
+        .fullscreen-btn.fullscreen-active {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--neon-blue);
+        }
+
+        .fullscreen-btn.fullscreen-active svg {
+            stroke: var(--neon-blue);
+        }
+
+        /* Controles futuristas */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 200;
+            padding: 10px 15px;
+            background: rgba(26, 26, 38, 0.9);
+            border: 1px solid var(--border-tech);
+            border-radius: 60px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 212, 255, 0.1);
+        }
+
+        /* Botones con efecto tecnológico */
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(10, 10, 15, 0.9);
+            color: var(--text-primary);
+            border: 1px solid var(--border-tech);
+            padding: 14px 28px;
+            min-width: 140px;
+            min-height: 50px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        button:hover {
+            background: rgba(20, 20, 35, 0.95);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:focus-visible {
+            outline: 2px solid var(--neon-blue);
+            outline-offset: 3px;
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        button:disabled:hover {
+            transform: none;
+            border-color: var(--border-tech);
+            box-shadow: none;
+        }
+
+        #prev svg, #next svg {
+            stroke: var(--neon-blue);
+            transition: stroke 0.3s ease;
+        }
+
+        button:hover svg {
+            stroke: var(--neon-purple);
+        }
+
+        /* Componentes tecnológicos */
+        .diagram {
+            background: rgba(10, 10, 15, 0.7);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 1.1rem;
+            border: 1px solid var(--border-tech);
+            color: var(--neon-blue);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+        }
+
+        .diagram::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.05), transparent);
+            z-index: 0;
+        }
+
+        .highlight {
+            color: var(--neon-blue);
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .content-flex {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-flex::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-flex::-webkit-scrollbar-track {
+            background: rgba(10, 10, 15, 0.5);
+            border-radius: 10px;
+        }
+
+        .content-flex::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--neon-purple), var(--neon-blue));
+            border-radius: 10px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 25px;
+        }
+
+        .card {
+            background: rgba(10, 10, 15, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--border-tech);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--neon-purple), var(--neon-blue));
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(122, 79, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .math {
+            background: rgba(10, 10, 15, 0.7);
+            padding: 20px;
+            border-left: 4px solid var(--neon-blue);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            color: var(--text-secondary);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Elementos decorativos tecnológicos */
+        .tech-border {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .tech-border-top {
+            top: 0;
+            left: 20px;
+            right: 20px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+        }
+
+        .tech-border-bottom {
+            bottom: 0;
+            left: 20px;
+            right: 20px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+        }
+
+        /* Logo de IA en la portada */
+        .ai-logo {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Indicador de progreso */
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(26, 26, 38, 0.5);
+            z-index: 150;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+            width: 14.28%;
+            transition: width 0.5s ease;
+        }
+
+        /* Puntos de conexión (simulando red neuronal) */
+        .connection-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-blue);
+            z-index: -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 40px;
+                height: 80vh;
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+                width: 95%;
+                height: 75vh;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .controls {
+                gap: 10px;
+                padding: 8px 12px;
+            }
+            
+            button {
+                min-width: 120px;
+                padding: 12px 20px;
+            }
+            
+            .slide-counter {
+                top: 15px;
+                right: 15px;
+                padding: 8px 16px;
+            }
+            
+            .fullscreen-btn {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .fullscreen-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+    <!-- Link a Inter font para mejor tipografía -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Partículas de datos animadas -->
+    <div id="data-particles"></div>
+    
+    <!-- Puntos de conexión de red neuronal -->
+    <div id="connection-dots"></div>
+    
+    <div class="progress-bar">
+        <div class="progress" id="slide-progress"></div>
+    </div>
+    
+    <div class="slide-counter">
+        <span id="current">1</span> / <span id="total">7</span>
+    </div>
+
+    <div class="presentation">
+        <!-- Slide 1: Portada -->
+        <div class="slide active">
+            <!-- Botón de pantalla completa (solo en la primera diapositiva) -->
+            <div class="fullscreen-btn" id="fullscreen-btn" title="Pantalla completa (F11)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M8 3H5C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V8M21 8V5C21 4.46957 20.7893 3.96086 20.4142 3.58579C20.0391 3.21071 19.5304 3 19 3H16M16 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V16M3 16V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H8" 
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex" style="justify-content: center; align-items: center; display: flex; flex-direction: column;">
+                <div class="ai-logo">
+                    <img src="img/logo.png" alt="Logo de Transformers y LLMs" style="width: 100px; height: auto;">
+                </div>
+                <h1>Transformers y LLMs</h1>
+                <p class="subtitle">La Arquitectura que Revolucionó la Inteligencia Artificial</p>
+                <p style="margin-top: 40px; font-size: 1.2em; text-align: center; color: var(--text-muted); max-width: 800px;">
+                    Una exploración profunda de los fundamentos técnicos detrás de los modelos de lenguaje modernos y su impacto en el futuro de la IA
+                </p>
+                <div style="margin-top: 50px; display: flex; gap: 15px;">
+                    <div style="width: 12px; height: 12px; background: var(--neon-blue); border-radius: 50%;"></div>
+                    <div style="width: 12px; height: 12px; background: var(--neon-purple); border-radius: 50%;"></div>
+                    <div style="width: 12px; height: 12px; background: var(--neon-blue); border-radius: 50%;"></div>
+                </div>
+            </div>
+        </div>
+
+                <!-- Slide 2: El Acertijo -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>El Acertijo del Lenguaje</h2>
+                
+                <div class="riddle">
+                    "El gato maulla y el perro..."
+                </div>
+
+                <h3>¿Qué hace el perro?</h3>
+                <ul>
+                    <li>¿Ladra? ✓</li>
+                    <li>¿Se asusta?</li>
+                    <li>¿No maulla?</li>
+                </ul>
+
+                <p style="margin-top: 30px;">La mayoría responde: <span class="highlight">"ladra"</span></p>
+
+                <h3>¿Cómo lo hicimos?</h3>
+                <p>A través de algo que se llama <strong>ATENCIÓN</strong>. Le ponemos atención a ciertas palabras y a otras no.</p>
+
+                <div class="example-box">
+                    <p><strong>Esto se puede expresar matemáticamente.</strong> Esta capacidad de "atención" es el corazón de los Transformers y la IA moderna.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Tokenización -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>1. Tokenización: Rompiendo el Lenguaje</h2>
+                
+                <h3>El Primer Paso</h3>
+                <p>Tomamos <strong>todo el lenguaje de la cultura humana</strong> y lo rompemos en pedacitos: letras, sílabas y palabras.</p>
+                
+                <div class="card">
+                    <h3 style="margin-top: 0; padding-left: 0;">Tamaño de Vocabularios</h3>
+                    <ul style="margin-left: 20px; font-size: 1.1em;">
+                        <li><strong>Traductores:</strong> 40,000 - 50,000 tokens</li>
+                        <li><strong>GPT-4, Llama, etc.:</strong> hasta 256,000 tokens</li>
+                    </ul>
+                </div>
+
+                <h3>Ejemplo: "satisfacción"</h3>
+                <div class="diagram">
+                    satisfacción → [SAT] [IS] [F] [ACCIÓN]<br><br>
+                    Cada pedazo es un TOKEN
+                </div>
+
+                <p>Así manejamos palabras nuevas o raras dividiéndolas en partes conocidas.</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Espacio N-Dimensional -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>2. Espacio N-Dimensional: Embeddings</h2>
+                
+                <h3>Correlación Entre Tokens</h3>
+                <p>Evaluamos <strong>qué tan cercana está cada palabra con otras</strong> en todo el lenguaje.</p>
+                
+                <div class="example-box">
+                    <p><strong>Ejemplo con "GATO":</strong></p>
+                    <p>📊 <strong>Eje ANIMAL:</strong> gato = 0 (muy cerca)</p>
+                    <p>🚗 <strong>Eje AUTOMÓVIL:</strong> gato = 100 (muy lejos)</p>
+                    <p>❤️ <strong>Eje AMOR:</strong> gato = 10 (algo cerca)</p>
+                </div>
+
+                <h3>Palabras Como Vectores</h3>
+                <div class="math">
+                    Rey - Hombre + Mujer ≈ Reina<br>
+                    Italia - Roma + Colombia ≈ Bogotá
+                </div>
+
+                <p><strong>¡Podemos hacer matemáticas con significados!</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 5: El Problema Antes de Transformers -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>3. El Problema: Modelos Secuenciales</h2>
+                
+                <h3>Antes de 2017: RNNs y LSTMs</h3>
+                <p>Los modelos dominantes procesaban texto <strong>palabra por palabra, secuencialmente</strong>:</p>
+
+                <div class="comparison">
+                    <div class="comparison-item old-way">
+                        <h3 style="margin-top: 0; color: #ef5350;">❌ Modelos Antiguos (RNN/LSTM)</h3>
+                        <ul style="text-align: left; font-size: 1.1em;">
+                            <li>Procesamiento secuencial</li>
+                            <li>Lento (no paralelizable)</li>
+                            <li>"Olvidan" el inicio en textos largos</li>
+                            <li>Difícil de entrenar</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="comparison-item new-way">
+                        <h3 style="margin-top: 0; color: #66bb6a;">✓ Lo que Necesitábamos</h3>
+                        <ul style="text-align: left; font-size: 1.1em;">
+                            <li>Procesamiento paralelo</li>
+                            <li>Rápido y eficiente</li>
+                            <li>Contexto completo siempre</li>
+                            <li>Escalable</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="key-innovation">
+                    <p style="font-size: 1.3em; text-align: center; margin: 0;">
+                        <strong>La solución: Eliminar la recurrencia por completo y usar solo ATENCIÓN</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Attention is All You Need -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>4. "Attention is All You Need" (2017)</h2>
+                
+                <div class="architecture-box">
+                    <h3 style="margin-top: 0;">El Paper que Cambió Todo</h3>
+                    <p><strong>Autores:</strong> Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin (Google Brain)</p>
+                    <p><strong>Citado:</strong> Más de 173,000 veces (uno de los papers más citados del siglo XXI)</p>
+                </div>
+
+                <h3>La Propuesta Revolucionaria</h3>
+                <p>Una arquitectura simple basada <strong>únicamente en mecanismos de atención</strong>, eliminando completamente la recurrencia y convoluciones.</p>
+
+                <h3>Resultados Iniciales</h3>
+                <ul>
+                    <li><strong>Traducción Inglés-Alemán:</strong> 28.4 BLEU (superó todos los modelos anteriores)</li>
+                    <li><strong>Traducción Inglés-Francés:</strong> 41.8 BLEU (nuevo récord)</li>
+                    <li><strong>Entrenamiento:</strong> 3.5 días en 8 GPUs (fracción del costo de otros modelos)</li>
+                    <li><strong>Paralelización:</strong> Significativamente más rápido</li>
+                </ul>
+
+                <div class="key-innovation">
+                    <p style="margin: 0;"><strong>"Team Transformer"</strong> originalmente lo probaron en traducción, Wikipedia y análisis sintáctico, confirmando que era un modelo de lenguaje de propósito general.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Arquitectura Transformer - Visión General -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>5. Arquitectura del Transformer</h2>
+                
+                <h3>Estructura Encoder-Decoder</h3>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="font-size: 1.5em; margin-top: 0; padding-left: 0;">📥 ENCODER</h3>
+                        <p><strong>Función:</strong> Procesa la entrada completa y genera representaciones contextuales</p>
+                        <ul style="margin-left: 20px; font-size: 1.1em;">
+                            <li>Stack de 6 capas idénticas</li>
+                            <li>Cada capa tiene 2 sub-capas</li>
+                            <li>Bidireccional (ve todo el contexto)</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Usado en:</strong> BERT, RoBERTa</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 style="font-size: 1.5em; margin-top: 0; padding-left: 0;">📤 DECODER</h3>
+                        <p><strong>Función:</strong> Genera salida secuencialmente</p>
+                        <ul style="margin-left: 20px; font-size: 1.1em;">
+                            <li>Stack de 6 capas idénticas</li>
+                            <li>Cada capa tiene 3 sub-capas</li>
+                            <li>Unidireccional (atención enmascarada)</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Usado en:</strong> GPT, Claude, ChatGPT</p>
+                    </div>
+                </div>
+
+                <h3>Dimensiones del Modelo</h3>
+                <div class="math">
+                    d_model = 512 (dimensión de embeddings)<br>
+                    N = 6 (número de capas)<br>
+                    h = 8 (número de attention heads)<br>
+                    d_k = d_v = 64 (dimensión de cada head)
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Componentes del Transformer -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>6. Componentes Clave del Transformer</h2>
+                
+                <h3>1. Multi-Head Self-Attention</h3>
+                <div class="key-innovation">
+                    <p>El corazón del sistema. Permite que cada token "atienda" a todos los demás simultáneamente.</p>
+                    <p style="margin: 10px 0 0 0;"><strong>8 cabezas en paralelo</strong> - cada una aprende diferentes tipos de relaciones (sintaxis, semántica, etc.)</p>
+                </div>
+
+                <h3>2. Position-wise Feed-Forward Networks</h3>
+                <div class="math">
+                    FFN(x) = max(0, xW₁ + b₁)W₂ + b₂<br>
+                    Dimensión interna: 2048
+                </div>
+                <p>Aplica transformaciones no lineales a cada posición independientemente.</p>
+
+                <h3>3. Positional Encoding</h3>
+                <p>Inyecta información de posición usando funciones seno y coseno:</p>
+                <div class="math">
+                    PE(pos, 2i) = sin(pos / 10000^(2i/d_model))<br>
+                    PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+                </div>
+                <p>Sin esto, el Transformer no sabría el orden de las palabras.</p>
+
+                <h3>4. Residual Connections + Layer Normalization</h3>
+                <p><strong>Residual:</strong> LayerNorm(x + Sublayer(x))</p>
+                <p>Facilita el entrenamiento de redes profundas evitando el vanishing gradient.</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Mecanismo de Atención Detallado -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>7. Mecanismo de Atención (Detallado)</h2>
+                
+                <h3>Scaled Dot-Product Attention</h3>
+                <div class="diagram">
+                    Attention(Q, K, V) = softmax(QK^T / √d_k) × V
+                </div>
+
+                <h3>Los Tres Componentes</h3>
+                <div class="example-box">
+                    <p><strong>Q (Query):</strong> "¿Qué estoy buscando?" - La palabra actual</p>
+                    <p><strong>K (Key):</strong> "¿Qué información ofrezco?" - Todas las palabras</p>
+                    <p><strong>V (Value):</strong> "Información real" - Los valores a extraer</p>
+                </div>
+
+                <h3>Ejemplo: "El gato maulla y el perro..."</h3>
+                <ol>
+                    <li><strong>Query:</strong> "perro" (última palabra)</li>
+                    <li><strong>Keys cercanas:</strong> "maulla" y "gato" (en el espacio vectorial)</li>
+                    <li><strong>Cálculo:</strong> QK^T genera scores de similitud</li>
+                    <li><strong>Softmax:</strong> Convierte scores en probabilidades</li>
+                    <li><strong>Resultado:</strong> Vector que apunta a "ladra" con 87% de probabilidad</li>
+                </ol>
+
+                <h3>¿Por qué dividir por √d_k?</h3>
+                <p>Evita que los productos punto sean muy grandes, lo que haría que softmax tenga gradientes muy pequeños.</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Multi-Head Attention -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>8. Multi-Head Attention: Múltiples Perspectivas</h2>
+                
+                <h3>¿Por Qué Múltiples Cabezas?</h3>
+                <p>Una sola cabeza promedia la atención. Múltiples cabezas permiten atender a <strong>diferentes aspectos simultáneamente</strong>.</p>
+
+                <div class="example-box">
+                    <h3 style="margin-top: 0;">Ejemplo: "María le dio un regalo a Juan porque es su amigo"</h3>
+                    <p><strong>Head 1 (Sintaxis):</strong> Conecta "dio" con "María" (sujeto) y "regalo" (objeto)</p>
+                    <p><strong>Head 2 (Correferencia):</strong> Conecta "es" con "Juan", no con "María"</p>
+                    <p><strong>Head 3 (Semántica):</strong> Conecta "regalo" con "amigo" (relación de amistad)</p>
+                </div>
+
+                <h3>Implementación</h3>
+                <div class="math">
+                    MultiHead(Q,K,V) = Concat(head₁,...,head₈)W^O<br><br>
+                    donde head_i = Attention(QW^Q_i, KW^K_i, VW^V_i)
+                </div>
+
+                <h3>Ventajas</h3>
+                <ul>
+                    <li>Captura relaciones complejas desde múltiples perspectivas</li>
+                    <li>Cada cabeza se especializa en diferentes patrones</li>
+                    <li>Más robusto que atención de una sola cabeza</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 11: Entrenamiento y Variantes -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>9. Entrenamiento y Variantes del Transformer</h2>
+                
+                <h3>Entrenamiento del Transformer Original</h3>
+                <ul>
+                    <li><strong>Optimizador:</strong> Adam (β₁=0.9, β₂=0.98, ε=10⁻⁹)</li>
+                    <li><strong>Learning Rate Scheduling:</strong> Warmup (4000 pasos) + decay</li>
+                    <li><strong>Regularización:</strong> Dropout (0.1), Label Smoothing (0.1)</li>
+                    <li><strong>Hardware:</strong> 8 GPUs P100, 3.5 días para el modelo grande</li>
+                </ul>
+
+                <h3>Variantes Modernas</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="font-size: 1.3em; margin-top: 0; padding-left: 0;">Encoder-Only</h3>
+                        <p><strong>BERT, RoBERTa</strong></p>
+                        <p>Excelentes para:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Clasificación de texto</li>
+                            <li>Análisis de sentimiento</li>
+                            <li>NER, Q&A</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 style="font-size: 1.3em; margin-top: 0; padding-left: 0;">Decoder-Only</h3>
+                        <p><strong>GPT, Claude, LLaMA</strong></p>
+                        <p>Excelentes para:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Generación de texto</li>
+                            <li>Conversación</li>
+                            <li>Código, creatividad</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Escalamiento</h3>
+                <div class="math">
+                    GPT-2: 1.5B parámetros<br>
+                    GPT-3: 175B parámetros<br>
+                    GPT-4: ~1.7T parámetros (estimado)
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: De Transformers a LLMs -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex">
+                <h2>10. De Transformers a LLMs Modernos</h2>
+                
+                <h3>El Camino</h3>
+                <ol style="font-size: 1.2em;">
+                    <li><strong>2017:</strong> Transformer para traducción</li>
+                    <li><strong>2018:</strong> BERT (encoder) y GPT (decoder)</li>
+                    <li><strong>2019-2020:</strong> Escalamiento masivo (GPT-2, GPT-3)</li>
+                    <li><strong>2022:</strong> RLHF + ChatGPT (conversacional)</li>
+                    <li><strong>2023-2024:</strong> GPT-4, Claude, Gemini, LLaMA</li>
+                </ol>
+
+                <h3>RLHF: El Toque Final</h3>
+                <div class="example-box">
+                    <p><strong>Reinforcement Learning with Human Feedback</strong></p>
+                    <p>OpenAI contrató 6,000 personas para hablar con GPT y:</p>
+                    <ul>
+                        <li>Regañarlo cuando no se comportaba como chat</li>
+                        <li>Recompensarlo cuando sí lo hacía</li>
+                    </ul>
+                    <p style="margin-top: 10px;">Esto enseñó al modelo: cuándo parar, cómo estructurar respuestas, personalidad conversacional.</p>
+                </div>
+
+                <h3>Impacto</h3>
+                <p>Los Transformers han democratizado la IA y se usan en:</p>
+                <ul>
+                    <li>Procesamiento de lenguaje (ChatGPT, Claude)</li>
+                    <li>Visión por computadora (Vision Transformers)</li>
+                    <li>Generación de imágenes (DALL-E)</li>
+                    <li>Biología (AlphaFold)</li>
+                    <li>Y mucho más...</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 13: Conclusión -->
+        <div class="slide">
+            <div class="tech-border tech-border-top"></div>
+            <div class="tech-border tech-border-bottom"></div>
+            <div class="content-flex" style="justify-content: center;">
+                <h2>Resumen: Transformers + LLMs</h2>
+                
+                <div class="architecture-box">
+                    <h3 style="margin-top: 0;">La Revolución Transformer</h3>
+                    <ol style="font-size: 1.2em;">
+                        <li><strong>Tokenización:</strong> Dividir el lenguaje en tokens</li>
+                        <li><strong>Embeddings:</strong> Vectores en espacio n-dimensional</li>
+                        <li><strong>Attention Mechanism:</strong> Enfocarse en lo relevante</li>
+                        <li><strong>Multi-Head Attention:</strong> Múltiples perspectivas simultáneas</li>
+                        <li><strong>Transformer Architecture:</strong> Encoder-Decoder con atención</li>
+                        <li><strong>Entrenamiento Masivo:</strong> Miles de millones de parámetros</li>
+                        <li><strong>RLHF:</strong> Comportamiento conversacional</li>
+                    </ol>
+                </div>
+
+                <div class="riddle">
+                    "El gato maulla y el perro LADRA"
+                </div>
+
+                <p style="text-align: center; font-size: 1.3em; margin-top: 20px;">
+                    <strong>La Atención es Todo lo que Necesitas</strong><br>
+                    "Attention is All You Need"
+                </p>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">🚀</div>
+                    <p style="font-size: 1.4em; color: var(--neon-blue);">
+                        <strong>¡Gracias por tu atención!</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls" role="group" aria-label="Controles de navegación">
+        <button id="prev" onclick="changeSlide(-1)" aria-label="Ir a la diapositiva anterior">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Anterior</span>
+        </button>
+        <button id="next" onclick="changeSlide(1)" aria-label="Ir a la diapositiva siguiente">
+            <span>Siguiente</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('slide-progress');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+        document.getElementById('total').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('current').textContent = currentSlide + 1;
+            document.getElementById('prev').disabled = currentSlide === 0;
+            document.getElementById('next').disabled = currentSlide === totalSlides - 1;
+            
+            // Actualizar barra de progreso
+            const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = progressPercentage + '%';
+            
+            // Ocultar botón de pantalla completa si no estamos en la primera diapositiva
+            if (currentSlide === 0) {
+                fullscreenBtn.style.display = 'flex';
+            } else {
+                fullscreenBtn.style.display = 'none';
+            }
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Funcionalidad de pantalla completa
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                // Entrar en pantalla completa
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari y Opera
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+                    document.documentElement.msRequestFullscreen();
+                }
+                fullscreenBtn.classList.add('fullscreen-active');
+            } else {
+                // Salir de pantalla completa
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) { // Firefox
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) { // Chrome, Safari y Opera
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { // IE/Edge
+                    document.msExitFullscreen();
+                }
+                fullscreenBtn.classList.remove('fullscreen-active');
+            }
+        }
+
+        // Detectar cambios en el estado de pantalla completa
+        document.addEventListener('fullscreenchange', updateFullscreenButton);
+        document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+        document.addEventListener('msfullscreenchange', updateFullscreenButton);
+
+        function updateFullscreenButton() {
+            if (document.fullscreenElement || 
+                document.mozFullScreenElement || 
+                document.webkitFullscreenElement || 
+                document.msFullscreenElement) {
+                fullscreenBtn.classList.add('fullscreen-active');
+                // Cambiar icono cuando está en pantalla completa
+                fullscreenBtn.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M9 9L6 6M9 15L6 18M15 9L18 6M15 15L18 18M4 12H20M12 4V20" 
+                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                `;
+                fullscreenBtn.setAttribute('title', 'Salir de pantalla completa (Esc)');
+            } else {
+                fullscreenBtn.classList.remove('fullscreen-active');
+                // Volver al icono original
+                fullscreenBtn.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M8 3H5C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V8M21 8V5C21 4.46957 20.7893 3.96086 20.4142 3.58579C20.0391 3.21071 19.5304 3 19 3H16M16 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V16M3 16V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H8" 
+                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                `;
+                fullscreenBtn.setAttribute('title', 'Pantalla completa (F11)');
+            }
+        }
+
+        // Evento para el botón de pantalla completa
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') showSlide(0);
+            if (e.key === 'End') showSlide(totalSlides - 1);
+            if (e.key === 'F11') {
+                e.preventDefault(); // Prevenir comportamiento por defecto de F11
+                toggleFullscreen();
+            }
+            if (e.key === 'Escape' && (document.fullscreenElement || 
+                document.mozFullScreenElement || 
+                document.webkitFullscreenElement || 
+                document.msFullscreenElement)) {
+                toggleFullscreen();
+            }
+        });
+
+        // Crear partículas de datos animadas
+        function createDataParticles() {
+            const container = document.getElementById('data-particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'data-particle';
+                
+                // Posición aleatoria
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                
+                // Tamaño aleatorio
+                const size = Math.random() * 3 + 1;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                // Color aleatorio (azul o púrpura)
+                const colors = ['#00d4ff', '#7a4fff', '#ff00ff'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.boxShadow = `0 0 ${size * 3}px ${particle.style.background}`;
+                
+                // Animación
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                
+                particle.style.animation = `
+                    float ${duration}s ease-in-out ${delay}s infinite
+                `;
+                
+                // Definir la animación de flotar
+                const keyframes = `
+                    @keyframes float {
+                        0%, 100% { 
+                            transform: translate(0, 0) rotate(0deg); 
+                            opacity: 0; 
+                        }
+                        10% { opacity: ${Math.random() * 0.5 + 0.3}; }
+                        50% { 
+                            transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(${Math.random() * 360}deg); 
+                            opacity: ${Math.random() * 0.7 + 0.3}; 
+                        }
+                        90% { opacity: ${Math.random() * 0.3 + 0.1}; }
+                    }
+                `;
+                
+                // Agregar keyframes si no existen
+                if (!document.getElementById('float-animation')) {
+                    const style = document.createElement('style');
+                    style.id = 'float-animation';
+                    style.textContent = keyframes;
+                    document.head.appendChild(style);
+                }
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Crear puntos de conexión de red neuronal
+        function createConnectionDots() {
+            const container = document.getElementById('connection-dots');
+            const dotCount = 15;
+            
+            for (let i = 0; i < dotCount; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'connection-dot';
+                
+                // Posición aleatoria
+                dot.style.left = Math.random() * 100 + 'vw';
+                dot.style.top = Math.random() * 100 + 'vh';
+                
+                // Tamaño aleatorio
+                const size = Math.random() * 6 + 3;
+                dot.style.width = size + 'px';
+                dot.style.height = size + 'px';
+                
+                // Pulsación
+                const pulseDuration = Math.random() * 3 + 2;
+                dot.style.animation = `glowPulse ${pulseDuration}s ease-in-out infinite`;
+                
+                container.appendChild(dot);
+            }
+        }
+
+        // Inicializar
+        showSlide(0);
+        createDataParticles();
+        createConnectionDots();
+
+        // Verificación de accesibilidad
+        (function runA11yChecks() {
+            console.info('[A11Y] Verificación de accesibilidad completada');
+            
+            // Modo debug visual (activar con ?a11y=1)
+            if (new URLSearchParams(location.search).get('a11y') === '1') {
+                document.querySelectorAll('button, h1, h2, h3, .slide, .controls').forEach(el => {
+                    el.style.outline = '2px dashed #fb923c';
+                    el.style.outlineOffset = '2px';
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
